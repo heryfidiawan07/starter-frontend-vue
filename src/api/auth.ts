@@ -38,9 +38,9 @@ export const authApi = {
     })
   },
 
-  oauthGoogle: (token: string) =>
-    api.post<ApiResponse<AuthTokens>>('/api/v1/auth/oauth/google', { token }),
+  oauthGoogle: (access_token: string) =>
+    api.post<ApiResponse<AuthTokens>>('/api/v1/auth/oauth/google', { access_token }),
 
-  oauthFacebook: (token: string) =>
-    api.post<ApiResponse<AuthTokens>>('/api/v1/auth/oauth/facebook', { token }),
+  oauthFacebook: (access_token: string) =>
+    api.post<ApiResponse<AuthTokens>>('/api/v1/auth/oauth/facebook', { access_token }),
 }
