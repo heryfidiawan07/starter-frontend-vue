@@ -1,0 +1,23 @@
+﻿<template>
+  <div class="min-h-screen bg-gradient-to-br from-primary-50 to-blue-100 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+      <div class="flex flex-col items-center mb-7">
+        <div class="w-11 h-11 bg-primary-600 rounded-xl flex items-center justify-center mb-3">
+          <Zap :size="22" class="text-white" />
+        </div>
+        <h1 class="text-xl font-bold text-gray-900">{{ title }}</h1>
+        <p v-if="subtitle" class="text-sm text-gray-500 mt-1 text-center">{{ subtitle }}</p>
+      </div>
+      <slot />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { Zap } from '@lucide/vue'
+
+defineProps<{
+  title: string
+  subtitle?: string
+}>()
+</script>
