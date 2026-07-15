@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <AppModal :open="open" :title="isEdit ? 'Edit Role' : 'Add New Role'" size="2xl" @close="$emit('close')">
     <form @submit.prevent="onSubmit" class="space-y-5">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -95,7 +95,17 @@ async function onSubmit() {
 
   loading.value = true
   try {
-    const payload = { name: form.name, description: form.description, permission_ids: Array.from(selected.value) }
+    const allSelectedIds = new Set(selected.value)
+    selected.value.forEach(id => {
+      let curr = id
+      while (true) {
+        const p = props.permissions.find(x => x.id === curr)
+        if (!p || !p.parent_id) break
+        allSelectedIds.add(p.parent_id)
+        curr = p.parent_id
+      }
+    })
+    const payload = { name: form.name, description: form.description, permission_ids: Array.from(allSelectedIds) }
     if (isEdit.value) {
       await rolesApi.update(props.role!.id, payload)
       toast.success('Role updated')

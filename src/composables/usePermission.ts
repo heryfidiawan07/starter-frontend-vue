@@ -7,7 +7,7 @@ export function usePermission() {
     const user = authStore.user
     if (!user) return false
     if (user.is_root) return true
-    return user.role?.permissions?.some((p) => p.name === name) ?? false
+    return authStore.userActions.includes(name)
   }
 
   return { can }

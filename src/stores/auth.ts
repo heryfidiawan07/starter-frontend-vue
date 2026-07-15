@@ -4,6 +4,7 @@ import type { User } from '@/types'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
+  const userActions = ref<string[]>([])
   const accessToken = ref<string | null>(null)
   const refreshToken = ref<string | null>(null)
 
