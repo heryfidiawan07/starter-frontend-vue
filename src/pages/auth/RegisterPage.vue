@@ -156,7 +156,7 @@ async function onSubmit() {
       const { access_token, refresh_token, user } = res.data.data
       authStore.setAuth(user, access_token, refresh_token)
       toast.success('Account created successfully!')
-      router.push('/dashboard')
+      router.push('/admin/dashboard')
     } else {
       toast.success(res.data.message)
       router.push('/login')

@@ -136,7 +136,7 @@ async function onSubmit() {
     const { access_token, refresh_token, user } = res.data.data!
     authStore.setAuth(user, access_token, refresh_token)
     toast.success('Welcome back!')
-    router.push('/dashboard')
+    router.push('/admin/dashboard')
   } catch {
     // handled by interceptor
   } finally {

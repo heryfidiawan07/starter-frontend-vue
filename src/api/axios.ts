@@ -17,6 +17,10 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config
     if (error.response?.status === 401 && !original._retry) {
+      if (original.url?.includes('/auth/login')) {
+        toast.error(error.response?.data?.message || 'Invalid credentials')
+        return Promise.reject(error)
+      }
       original._retry = true
       const refreshToken = localStorage.getItem('refresh_token')
       if (refreshToken) {
@@ -32,11 +36,11 @@ api.interceptors.response.use(
           return api(original)
         } catch {
           localStorage.clear()
-          window.location.href = '/login'
+          router.push('/login')
         }
       } else {
         localStorage.clear()
-        window.location.href = '/login'
+        router.push('/login')
       }
     }
     const message = error.response?.data?.message || 'Something went wrong'

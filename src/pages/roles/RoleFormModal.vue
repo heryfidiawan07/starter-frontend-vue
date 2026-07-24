@@ -9,7 +9,9 @@
       <div class="space-y-2">
         <div class="flex items-center justify-between">
           <label class="text-sm font-medium text-gray-700">Permissions</label>
-          <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{{ selected.size }} selected</span>
+          <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+            {{ Array.from(selected).filter(id => permissions.find(p => p.id === id)?.type !== 'category').length }} selected
+          </span>
         </div>
         <PermissionTree
           :permissions="permissions"
@@ -64,7 +66,18 @@ watch(() => props.open, (val) => {
   if (val) {
     form.name = props.role?.name ?? ''
     form.description = props.role?.description ?? ''
-    selected.value = new Set(props.role?.permissions?.map((p) => p.id) ?? [])
+    const ids: string[] = []
+    if (props.role?.permissions) {
+      const extractIds = (nodes: any[]) => {
+        nodes.forEach((n) => {
+          ids.push(n.id)
+          if (n.actions) n.actions.forEach((a: any) => ids.push(a.id))
+          if (n.children) extractIds(n.children)
+        })
+      }
+      extractIds(props.role.permissions)
+    }
+    selected.value = new Set(ids)
     errors.name = ''
   }
 })

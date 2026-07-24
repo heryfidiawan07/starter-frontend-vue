@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { usePermission } from '@/composables/usePermission'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -38,32 +39,32 @@ const router = createRouter({
 
     // Protected routes
     {
-      path: '/dashboard',
+      path: '/admin/dashboard',
       component: () => import('@/pages/dashboard/DashboardPage.vue'),
       meta: { requiresAuth: true },
     },
     {
-      path: '/users',
+      path: '/admin/users',
       component: () => import('@/pages/users/UsersPage.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, permission: 'user:index' },
     },
     {
-      path: '/roles',
+      path: '/admin/roles',
       component: () => import('@/pages/roles/RolesPage.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, permission: 'role:index' },
     },
     {
-      path: '/permissions',
+      path: '/admin/permissions',
       component: () => import('@/pages/permissions/PermissionsPage.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, permission: 'permission:index' },
     },
     {
-      path: '/profile',
+      path: '/admin/profile',
       component: () => import('@/pages/profile/ProfilePage.vue'),
       meta: { requiresAuth: true },
     },
     {
-      path: '/profile/password',
+      path: '/admin/profile/password',
       component: () => import('@/pages/profile/ChangePasswordPage.vue'),
       meta: { requiresAuth: true },
     },
@@ -86,11 +87,20 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const auth = useAuthStore()
+  const { can } = usePermission()
+
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     return '/login'
   }
+  
   if (to.meta.guest && auth.isAuthenticated) {
-    return '/dashboard'
+    return '/admin/dashboard'
+  }
+
+  if (to.meta.permission && typeof to.meta.permission === 'string') {
+    if (!can(to.meta.permission)) {
+      return '/403'
+    }
   }
 })
 

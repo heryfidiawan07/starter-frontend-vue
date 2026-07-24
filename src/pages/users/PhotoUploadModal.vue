@@ -1,7 +1,7 @@
 ﻿<template>
   <AppModal :open="open" title="Upload Photo" size="sm" @close="handleClose">
     <div class="flex flex-col items-center gap-5">
-      <div class="relative w-24 h-24 cursor-pointer group" @click="fileInput?.click()">
+      <div class="relative w-24 h-24 cursor-pointer group flex items-center justify-center" @click="fileInput?.click()">
         <AppAvatar :src="preview ?? user?.photo" :name="user?.name" size="lg" />
         <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
           <ImagePlus :size="20" class="text-white" />

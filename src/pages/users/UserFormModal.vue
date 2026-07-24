@@ -154,8 +154,16 @@ async function onSubmit() {
       toast.success('User created')
     }
     emit('success')
-  } catch {
-    // handled by interceptor
+  } catch (err: any) {
+    if (err.response?.status === 422 && err.response?.data?.errors) {
+      err.response.data.errors.forEach((e: any) => {
+        if (e.field in errors) {
+          (errors as any)[e.field] = e.message
+        } else {
+          (errors as any)[e.field] = e.message
+        }
+      })
+    }
   } finally {
     loading.value = false
   }

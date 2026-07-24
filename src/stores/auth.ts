@@ -10,6 +10,20 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isAuthenticated = computed(() => !!accessToken.value)
 
+  function extractActions(u: User | null): string[] {
+    const actions: string[] = []
+    if (u?.role?.permissions) {
+      const extract = (nodes: any[]) => {
+        nodes.forEach(n => {
+          if (n.actions) actions.push(...n.actions.map((a: any) => a.name))
+          if (n.children) extract(n.children)
+        })
+      }
+      extract(u.role.permissions)
+    }
+    return actions
+  }
+
   function setAuth(u: User, at: string, rt: string) {
     localStorage.setItem('access_token', at)
     localStorage.setItem('refresh_token', rt)
@@ -17,11 +31,13 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = u
     accessToken.value = at
     refreshToken.value = rt
+    userActions.value = extractActions(u)
   }
 
   function setUser(u: User) {
     localStorage.setItem('user', JSON.stringify(u))
     user.value = u
+    userActions.value = extractActions(u)
   }
 
   function logout() {
@@ -31,6 +47,7 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
     accessToken.value = null
     refreshToken.value = null
+    userActions.value = []
   }
 
   function initFromStorage() {
@@ -43,6 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = u
         accessToken.value = token
         refreshToken.value = refresh
+        userActions.value = extractActions(u)
       } catch {
         localStorage.clear()
       }

@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <MainLayout title="Roles">
     <div class="space-y-4">
       <!-- Toolbar -->
@@ -58,7 +58,20 @@
                 <p v-if="r.description" class="text-xs text-gray-400 mt-0.5">{{ r.description }}</p>
               </td>
               <td class="px-4 py-3 hidden md:table-cell">
-                <AppBadge variant="info">{{ r.permissions?.length ?? 0 }} permissions</AppBadge>
+                <AppBadge variant="info">
+                  {{ r.permissions ? (() => {
+                    const countPerms = (nodes: any[]): number => {
+                      let count = 0
+                      nodes.forEach(n => {
+                        count++
+                        if (n.actions) count += n.actions.length
+                        if (n.children) count += countPerms(n.children)
+                      })
+                      return count
+                    }
+                    return countPerms(r.permissions)
+                  })() : 0 }} permissions
+                </AppBadge>
               </td>
               <td class="px-4 py-3 hidden sm:table-cell text-gray-400 text-xs">
                 {{ new Date(r.created_at).toLocaleDateString() }}
